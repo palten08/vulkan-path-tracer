@@ -3,6 +3,7 @@
 #include "app.h"
 #include "window.h"
 #include "vulkan_instance.h"
+#include "vulkan_device.h"
 #include "sdl_lifecycle.h"
 
 int main(int argc, char** argv) {
@@ -17,6 +18,9 @@ int main(int argc, char** argv) {
     initialize_window(&app_window, (WindowResolution){800,600}, vulkan_instance.handle, application_name);
 
     puts("Vulkan instance created");
+
+    VulkanDevice vulkan_device = {0};
+    vulkan_device_create(&vulkan_device, vulkan_instance.handle, app_window.surface);
 
     while (!app_window.close_requested) {
         window_poll_events(&app_window);
