@@ -9,12 +9,12 @@ compile_commands.json
 
 
 .vs/
-bin/
-obj/
-Debug/
-Release/
-x64/
-x86/
+/bin/
+/obj/
+/Debug/
+/Release/
+/x64/
+/x86/
 *.user
 *.suo
 *.sln.docstates
