@@ -16,6 +16,20 @@ set_target_properties(SDL3::SDL3 PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "${SDL3_DIR}/include"
 )
 
+# --- Executable ---
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.c")
+add_executable(vulkan-path-tracer ${SOURCES})
+
+target_include_directories(vulkan-path-tracer PRIVATE include)
+target_link_libraries(vulkan-path-tracer PRIVATE Vulkan::Vulkan SDL3::SDL3)
+
+# Copy SDL3.dll next to the exe at build time
+add_custom_command(TARGET vulkan-path-tracer POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:SDL3::SDL3>
+        $<TARGET_FILE_DIR:vulkan-path-tracer>
+)
+
 # --- Shader compilation ---
 find_program(GLSLC glslc HINTS "$ENV{VULKAN_SDK}/Bin" REQUIRED)
 
@@ -50,17 +64,3 @@ endforeach()
 
 add_custom_target(shaders DEPENDS ${SHADER_BINARIES})
 add_dependencies(vulkan-path-tracer shaders)
-
-# --- Executable ---
-file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.c")
-add_executable(vulkan-path-tracer ${SOURCES})
-
-target_include_directories(vulkan-path-tracer PRIVATE include)
-target_link_libraries(vulkan-path-tracer PRIVATE Vulkan::Vulkan SDL3::SDL3)
-
-# Copy SDL3.dll next to the exe at build time
-add_custom_command(TARGET vulkan-path-tracer POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:SDL3::SDL3>
-        $<TARGET_FILE_DIR:vulkan-path-tracer>
-)
